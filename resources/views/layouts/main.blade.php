@@ -22,6 +22,7 @@
     @yield('script')
 
 
+    <script src="{{ asset('assets/js/axios.js') }}"></script>
     <script src="{{ asset('assets/js/bootstrap.js') }}"></script>
 
 </body>

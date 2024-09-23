@@ -25,7 +25,9 @@
                     </div>
                 </div>
                 <label class="my-auto mx-3">Duration: </label>
-                <input id="number-input" class="form-control w-25" type="number" value="1">
+                <input id="duration_input" class="form-control w-25" type="number" value="1">
+                <label class="my-auto mx-3">Day(s) </label>
+
             </div>
         </div>
     </div>
@@ -74,6 +76,34 @@
                 format: 'DD/MM/YYYY',
             });
             $('#date_input').datetimepicker('defaultDate', moment('25/11/2022', 'DD/MM/YYYY'));
+
+
+            $('#search-form').on('submit', function(e) {
+                e.preventDefault();
+                fetchResults();
+            });
+            $('#duration_input').on('change', function(e) {
+                e.preventDefault();
+                fetchResults();
+            });
+            $('#date_input').on('change.datetimepicker', function(e) {
+                e.preventDefault();
+                fetchResults();
+            });
         });
+
+        async function fetchResults() {
+            const area_name = $('#search-input').val();
+            const date = moment($("#date_input").data("datetimepicker").date()).format('YYYY-MM-DD');
+            const duration = $('#duration_input').val();
+            const res = await axios.get('/api/search/items/',{
+                params:{
+                    area_name : area_name,
+                    date : date,
+                    duration : duration,
+                }
+            });
+            console.log(res.data);
+        }
     </script>
 @endsection
