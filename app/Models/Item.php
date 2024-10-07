@@ -13,10 +13,14 @@ class Item extends Model
 
 
     function area(){
-        return $this->belongsTo(Area::class, 'AreaID','ID');
+        return $this->belongsTo(Area::class, 'AreaID');
     }
 
     function prices(){
-        return $this->hasMany(ItemPrice::class,'ItemID', 'ID');
+        return $this->hasMany(ItemPrice::class,'ItemID');
+    }
+
+    function pictures(){
+        return $this->hasMany(ItemPicture::class,'ItemID');
     }
 }

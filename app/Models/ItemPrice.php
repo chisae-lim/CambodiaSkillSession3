@@ -10,4 +10,9 @@ class ItemPrice extends Model
     use HasFactory;
     protected $table = 'itemprices';
     protected $primaryKey = 'ID';
+
+    function booking_details()
+    {
+        return $this->hasMany(BookingDetail::class, 'ItemPriceID');
+    }
 }

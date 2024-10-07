@@ -34,36 +34,8 @@
 
     <section class="pt-3">
         <div class="container">
-            <div class="row">
-                @php
-                    $a = 10;
-                @endphp
-                @for ($i = 0; $i < $a; $i++)
-                    <div class="col-3 mb-5">
-                        <div class="card h-100">
-                            <img class="card-img-top border border-secondary"
-                                src="{{ asset('assets/images/itemPictures/default.jpg') }}" alt="..." />
-                            <div class="card-body p-4">
-                                <div class="text-start">
-                                    <h5 class="fw-bolder">Fancy Product</h5>
-                                    <div class="d-flex gap-5">
-                                        <div>
-                                            <span>Area</span>
-                                            <span>1</span>
-                                        </div>
-                                        <div>
-                                            <span>1</span>
-                                            <span>people</span>
-                                        </div>
-                                    </div>
-                                    <div class="">
-                                        total price $<span>90</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                @endfor
+            <div class="row" id="item-container">
+
             </div>
         </div>
     </section>
@@ -90,20 +62,60 @@
                 e.preventDefault();
                 fetchResults();
             });
+            fetchResults();
         });
 
         async function fetchResults() {
             const area_name = $('#search-input').val();
             const date = moment($("#date_input").data("datetimepicker").date()).format('YYYY-MM-DD');
             const duration = $('#duration_input').val();
-            const res = await axios.get('/api/search/items/',{
-                params:{
-                    area_name : area_name,
-                    date : date,
-                    duration : duration,
+            const res = await axios.get('/api/search/items/', {
+                params: {
+                    area_name: area_name,
+                    date: date,
+                    duration: duration,
                 }
             });
-            console.log(res.data);
+            const items = res.data;
+            $('#item-container').empty();
+            items.forEach(({
+                ID,
+                Title,
+                pictures,
+                area
+            }) => { // object destructuring
+
+                $('#item-container').append(
+                    '<div class="col-3 mb-5">' +
+                    '<a href="/items/detail/'+ID+'">' +
+
+                    '<div class="card h-100">' +
+                    '<img class="card-img-top border border-secondary"' +
+                    'src="' + (pictures.length === 0 ? "assets/images/itemPictures/default.jpg" :
+                        "assets/images/itemPictures/" + pictures[0].PictureFileName) + '" alt="..." />' +
+                    '<div class="card-body p-4">' +
+                    '<div class="text-start">' +
+                    '<h5 class="fw-bolder">' + Title + '</h5>' +
+                    '<div class="d-flex gap-5">' +
+                    '<div>' +
+                    '<span>' + area.Name + '</span>' +
+                    '</div>' +
+                    '<div>' +
+                    '<span>1</span>' +
+                    '<span>people</span>' +
+                    '</div>' +
+                    '</div>' +
+                    '<div class="">' +
+                    'total price $<span>90</span>' +
+                    '</div>' +
+                    '</div>' +
+                    '</div>' +
+                    '</div>' +
+                    '</a>' +
+
+                    '</div>'
+                )
+            });
         }
     </script>
 @endsection

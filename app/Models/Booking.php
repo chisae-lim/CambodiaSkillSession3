@@ -5,13 +5,9 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Area extends Model
+class Booking extends Model
 {
     use HasFactory;
-    protected $table = 'areas';
+    protected $table = 'bookings';
     protected $primaryKey = 'ID';
-
-    function items(){
-        return $this->hasMany(Item::class,'AreaID');
-    }
 }
