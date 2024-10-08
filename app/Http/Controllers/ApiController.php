@@ -21,13 +21,20 @@ class ApiController extends Controller
 
 
         $items = Item::whereHas('area', function ($q) use ($area_name) {
-            $q->where('Name', $area_name);
-        })->whereDoesntHave('prices.booking_details.booking', function ($q)  use ($from_date, $to_date) {
-            $q->where('BookingDate', '>=', $from_date)
-                ->where('BookingDate', '<', $to_date);
-        })->with('pictures','area')
+            $q->where('Name', 'like', '%' . $area_name . '%');
+        })
+            ->whereHas('prices', function ($q)  use ($from_date, $to_date) {
+                $q->whereDoesntHave('booking_details.booking', function ($q)  use ($from_date, $to_date) {
+                    $q->where('BookingDate', '>=', $from_date)
+                        ->where('BookingDate', '<', $to_date);
+                });
+            })->with(['pictures', 'area', 'current_price' => function ($q) use ($from_date) {
+                $q->where('Date', '<=', $from_date);
+            }])
             ->get();
 
-        return $items;
+
+
+        return response($items, 200);
     }
 }

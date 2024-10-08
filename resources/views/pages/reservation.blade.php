@@ -81,13 +81,15 @@
             items.forEach(({
                 ID,
                 Title,
+                Capacity,
                 pictures,
-                area
+                area,
+                current_price
             }) => { // object destructuring
 
                 $('#item-container').append(
                     '<div class="col-3 mb-5">' +
-                    '<a href="/items/detail/'+ID+'">' +
+                    '<a href="/items/detail/' + ID + '/date/' + date + '/duration/' + duration + '">' +
 
                     '<div class="card h-100">' +
                     '<img class="card-img-top border border-secondary"' +
@@ -101,12 +103,12 @@
                     '<span>' + area.Name + '</span>' +
                     '</div>' +
                     '<div>' +
-                    '<span>1</span>' +
-                    '<span>people</span>' +
+                    '<span>' + Capacity + '</span>' +
+                    '<span> people</span>' +
                     '</div>' +
                     '</div>' +
                     '<div class="">' +
-                    'total price $<span>90</span>' +
+                    'total price $<span>' + current_price.Price + '</span>' +
                     '</div>' +
                     '</div>' +
                     '</div>' +

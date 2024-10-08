@@ -12,15 +12,27 @@ class Item extends Model
     protected $primaryKey = 'ID';
 
 
-    function area(){
+    function area()
+    {
         return $this->belongsTo(Area::class, 'AreaID');
     }
 
-    function prices(){
-        return $this->hasMany(ItemPrice::class,'ItemID');
+    function prices()
+    {
+        return $this->hasMany(ItemPrice::class, 'ItemID');
     }
 
-    function pictures(){
-        return $this->hasMany(ItemPicture::class,'ItemID');
+    function pictures()
+    {
+        return $this->hasMany(ItemPicture::class, 'ItemID');
+    }
+
+    function current_price()
+    {
+        return $this->hasOne(ItemPrice::class, 'ItemID', 'ID')->orderBy('Date', 'desc');
+    }
+
+    function item_amenities(){
+        return $this->hasMany(ItemAmenity::class,'ItemID');
     }
 }

@@ -1,11 +1,18 @@
-@extends('main')
+@extends('layouts.main')
 
 @section('title')
-    Seoul Stay Property Details for "property title"
+    Seoul Stay Property Details for "{{ $item->Title }}"
 @endsection
 
+<style>
+    img {
+        max-width: 290px;
+        max-height: 210px;
+        padding-right: 5px;
+    }
+</style>
 @section('body')
-    @include('layout.navbar')
+    @include('layouts.navbar')
 
     <div class="container mt-3">
         <h1 class="fs-5">Reservation results for <span>...</span> night</h1>
@@ -14,42 +21,30 @@
     <section class="pb-5 pt-3">
         <div class="container">
             <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-between">
-                @php
-                    $a = 3;
-                @endphp
-                @for ($i = 0; $i < $a; $i++)
-                    <div class="col mb-5">
-                        <div class="card h-100">
-                            <img class="card-img-top" src="{{ asset('asset/itemPictures/default.jpg') }}" alt="..." />
-                            <div class="card-body p-4">
-                                <div class="text-start">
-                                    <h5 class="fw-bolder">Fancy Product</h5>
-                                    <div class="d-flex gap-5">
-                                        <div class="">
-                                            <span>Area</span>
-                                            <span>1</span>
-                                        </div>
-                                        <div class="">
-                                            <span>1</span>
-                                            <span>people</span>
-                                        </div>
-                                    </div>
-                                    <div class="">
-                                        total price $<span>90</span>
-                                    </div>
-                                </div>
-                            </div>
+                @if (count($item->pictures) === 0)
+                    <div class="col-3">
+                        <div class="card">
+                            <img class="card-img-top" src="{{ asset('assets/images/itemPictures/default.jpg') }}" />
                         </div>
                     </div>
-                @endfor
+                @else
+                    @foreach ($item->pictures as $img)
+                        <div class="col-3">
+                            <div class="card p-0">
+                                <img src="{{ asset('assets/images/itemPictures/' . $img->PictureFileName) }}" />
+                            </div>
+                        </div>
+                    @endforeach
+                @endif
+
             </div>
             <div class="row gap-0">
                 <div class="col-4">
                     <div class="d-flex gap-3">
-                        <p class="fs-6">Capactiy <span>2</span></p>
-                        <p class="fs-6">Bedrooms <span>2</span></p>
-                        <p class="fs-6">Beds <span>2</span></p>
-                        <p class="fs-6">Bathrooms <span>2</span></p>
+                        <p class="fs-6">Capactiy <span>{{ $item->Capacity }}</span></p>
+                        <p class="fs-6">Bedrooms <span>{{ $item->NumberOfBedrooms }}</span></p>
+                        <p class="fs-6">Beds <span>{{ $item->NumberOfBeds }}</span></p>
+                        <p class="fs-6">Bathrooms <span>{{ $item->NumberOfBathrooms }}</span></p>
                     </div>
                     <h1 class="fs-5">Description</h1>
                     <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Sequi molestias officia, iusto tenetur
@@ -66,12 +61,12 @@
                         <div class="d-flex justify-content-center">
                             <div class="">
                                 <p>Available Amenties</p>
-                                <p> <img class="" width="20" src="{{ asset('asset/48px/028-connection.png') }}"
-                                        alt=""> WIFI</p>
-                                <p> <img class="" width="20" src="{{ asset('asset/48px/087-display.png') }}"
-                                        alt=""> TV - DVD</p>
-                                <p> <img class="" width="20" src="{{ asset('asset/48px/096-box-remove.png') }}"
-                                        alt=""> Bathroom</p>
+
+                                @foreach ($item->item_amenities as $item_amenity)
+                                    <p> <img class="" width="20"
+                                            src="{{ asset('assets/images/png/16px/'.$item_amenity->amenity->IconName) }}" alt="">
+                                        {{ $item_amenity->amenity->Name }}</p>
+                                @endforeach
                             </div>
                         </div>
                     </div>

@@ -15,4 +15,7 @@ class ItemPrice extends Model
     {
         return $this->hasMany(BookingDetail::class, 'ItemPriceID');
     }
+    function item(){
+        return $this->belongsTo(Item::class,'ItemID');
+    }
 }
