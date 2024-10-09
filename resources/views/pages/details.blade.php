@@ -15,12 +15,12 @@
     @include('layouts.navbar')
 
     <div class="container mt-3">
-        <h1 class="fs-5">Reservation results for <span>...</span> night</h1>
+        <h1 class="fs-5">Details of "{{ $item->Title }}" at {{ $item->area->Name }}</h1>
     </div>
 
     <section class="pb-5 pt-3">
         <div class="container">
-            <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-between">
+            <div class="row justify-content-between">
                 @if (count($item->pictures) === 0)
                     <div class="col-3">
                         <div class="card">
@@ -38,25 +38,21 @@
                 @endif
 
             </div>
-            <div class="row gap-0">
-                <div class="col-4">
-                    <div class="d-flex gap-3">
+            <div class="row mt-3">
+                <div class="col">
+                    <div class="d-flex">
                         <p class="fs-6">Capactiy <span>{{ $item->Capacity }}</span></p>
                         <p class="fs-6">Bedrooms <span>{{ $item->NumberOfBedrooms }}</span></p>
                         <p class="fs-6">Beds <span>{{ $item->NumberOfBeds }}</span></p>
                         <p class="fs-6">Bathrooms <span>{{ $item->NumberOfBathrooms }}</span></p>
                     </div>
                     <h1 class="fs-5">Description</h1>
-                    <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Sequi molestias officia, iusto tenetur
-                        accusantium ullam, exercitationem voluptatibus odit eum vitae ipsam recusandae et quaerat vero sunt
-                        maiores, necessitatibus odio nesciunt.</p>
+                    <p>{{ $item->Description }}</p>
 
                     <h1 class="fs-5">Host rules</h1>
-                    <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Sequi molestias officia, iusto tenetur
-                        accusantium ullam, exercitationem voluptatibus odit eum vitae ipsam recusandae et quaerat vero sunt
-                        maiores, necessitatibus odio nesciunt.</p>
+                    <p>{{ $item->HostRules }}</p>
                 </div>
-                <div class="col-4">
+                <div class="col">
                     <div class="">
                         <div class="d-flex justify-content-center">
                             <div class="">
@@ -64,29 +60,39 @@
 
                                 @foreach ($item->item_amenities as $item_amenity)
                                     <p> <img class="" width="20"
-                                            src="{{ asset('assets/images/png/16px/'.$item_amenity->amenity->IconName) }}" alt="">
+                                            src="{{ asset('assets/images/png/16px/' . $item_amenity->amenity->IconName) }}"
+                                            alt="">
                                         {{ $item_amenity->amenity->Name }}</p>
                                 @endforeach
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="col-4 d-flex justify-content-end gap-3">
-                    <div class="text-end">
-                        <p>check-in <span>dd/mm/yyyy</span></p>
-                        <p>check-out <span>dd/mm/yyyy</span></p>
-                        <div class="" style="width: 50px d-flex">
-                            Reservation for
-                            <input type="number" name="numeric" id="numeric">
-                            ppl
-                        </div>
-                        <p class="text-center">Payable Amount 90 USD</p>
-                        <div class="w-100 px-5">
-                            <a href="" class="w-100 btn btn-outline-primary">Reserve now</a>
-                        </div>
-                    </div>
+                <div class="col-3">
+                    <p>check-in <span>{{ \Carbon\Carbon::parse($from_date)->format('d/m/Y') }}</span></p>
+                    <p>check-out
+                        <span>{{ \Carbon\Carbon::parse($from_date)->addDays(intval($duration))->format('d/m/Y') }}</span>
+                    </p>
+                    <p class="d-flex justify-content-start">
+                        <span class="my-auto"> Reserve for</span>
+                        <input type="number" class="form-control w-25 mx-1" step="1" value="1" min="1"
+                            max="{{ $item->Capacity }}">
+                        <span class="my-auto"> ppl</span>
+
+                    </p>
+                    <h5>Payable Amount {{ $item->current_price->Price * $duration }} USD</h5>
+                    <button class="btn btn-outline-primary w-100">Reserve now</a>
+                    </button>
                 </div>
             </div>
         </div>
     </section>
+@endsection
+
+@section('script')
+    <script>
+        $(document).ready(function() {
+            $('#search-input').val('{{ $item->area->Name }}').prop('disabled', true);
+        });
+    </script>
 @endsection

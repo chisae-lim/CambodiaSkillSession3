@@ -1,7 +1,6 @@
 @extends('layouts.main')
 
 @section('title')
-    Seoul stay-Reservation Results for seocho-Gu
 @endsection
 
 @section('head')
@@ -13,7 +12,7 @@
 
     <div class="container mt-3">
         <div class="row">
-            <h1 class="col fs-5">Reservation results for <span>...</span> night</h1>
+            <h6 class="col" id="header-label"></h6>
 
             <div class="col-auto d-flex justify-content-end">
                 <label class="my-auto mx-3">Date: </label>
@@ -44,6 +43,7 @@
 @section('script')
     <script>
         $(document).ready(function() {
+            $('#search-input').val('Seocho-gu');
             $('#date_input').datetimepicker({
                 format: 'DD/MM/YYYY',
             });
@@ -67,57 +67,72 @@
 
         async function fetchResults() {
             const area_name = $('#search-input').val();
-            const date = moment($("#date_input").data("datetimepicker").date()).format('YYYY-MM-DD');
+            const date = moment($("#date_input").data("datetimepicker").date()).format('DD-MM-YYYY');
             const duration = $('#duration_input').val();
-            const res = await axios.get('/api/search/items/', {
-                params: {
-                    area_name: area_name,
-                    date: date,
-                    duration: duration,
+            try {
+                const res = await axios.get('/api/search/items/', {
+                    params: {
+                        area_name: area_name,
+                        date: date, // 'DD-MM-YYYY'
+                        duration: duration,
+                    }
+                });
+                const items = res.data;
+                $('#item-container').empty();
+                items.forEach(({
+                    ID,
+                    Title,
+                    Capacity,
+                    pictures,
+                    area,
+                    current_price
+                }) => { // object destructuring
+
+                    $('#item-container').append(
+                        '<div class="col-3 mb-5">' +
+                        '<a href="/items/detail/' + ID + '/date/' + date + '/duration/' +
+                        duration + '">' +
+
+                        '<div class="card h-100">' +
+                        '<img class="card-img-top border border-secondary"' +
+                        'src="' + (pictures.length === 0 ? "assets/images/itemPictures/default.jpg" :
+                            "assets/images/itemPictures/" + pictures[0].PictureFileName) +
+                        '" alt="..." />' +
+                        '<div class="card-body p-4">' +
+                        '<div class="text-start">' +
+                        '<h5 class="fw-bolder">' + Title + '</h5>' +
+                        '<div class="d-flex gap-5">' +
+                        '<div>' +
+                        '<span>' + area.Name + '</span>' +
+                        '</div>' +
+                        '<div>' +
+                        '<span>' + Capacity + '</span>' +
+                        '<span> people</span>' +
+                        '</div>' +
+                        '</div>' +
+                        '<div class="">' +
+                        'total price $<span>' + current_price.Price + '</span>' +
+                        '</div>' +
+                        '</div>' +
+                        '</div>' +
+                        '</div>' +
+                        '</a>' +
+
+                        '</div>'
+                    )
+                });
+                if (items.length === 0 || area_name === '') {
+                    $('title').html('Seoul stay-Reservation Results')
+                    $('#header-label').html('Reservation results from ' +
+                        date + ' for ' + duration + ' night');
+                } else {
+                    $('title').html('Seoul stay-Reservation Results For ' + area_name)
+                    $('#header-label').html('Reservation results for "' + area_name + '" from ' +
+                        date + ' for ' + duration + ' night');
                 }
-            });
-            const items = res.data;
-            $('#item-container').empty();
-            items.forEach(({
-                ID,
-                Title,
-                Capacity,
-                pictures,
-                area,
-                current_price
-            }) => { // object destructuring
-
-                $('#item-container').append(
-                    '<div class="col-3 mb-5">' +
-                    '<a href="/items/detail/' + ID + '/date/' + date + '/duration/' + duration + '">' +
-
-                    '<div class="card h-100">' +
-                    '<img class="card-img-top border border-secondary"' +
-                    'src="' + (pictures.length === 0 ? "assets/images/itemPictures/default.jpg" :
-                        "assets/images/itemPictures/" + pictures[0].PictureFileName) + '" alt="..." />' +
-                    '<div class="card-body p-4">' +
-                    '<div class="text-start">' +
-                    '<h5 class="fw-bolder">' + Title + '</h5>' +
-                    '<div class="d-flex gap-5">' +
-                    '<div>' +
-                    '<span>' + area.Name + '</span>' +
-                    '</div>' +
-                    '<div>' +
-                    '<span>' + Capacity + '</span>' +
-                    '<span> people</span>' +
-                    '</div>' +
-                    '</div>' +
-                    '<div class="">' +
-                    'total price $<span>' + current_price.Price + '</span>' +
-                    '</div>' +
-                    '</div>' +
-                    '</div>' +
-                    '</div>' +
-                    '</a>' +
-
-                    '</div>'
-                )
-            });
+            } catch (error) {
+                window.location.reload();
+            }
         }
     </script>
 @endsection

@@ -20,7 +20,7 @@
                 alt="Logo" height="24" class="d-inline-block align-text-top">
             </a>
         <form id="search-form" class="d-flex col-4" role="search">
-            <input id="search-input" class="form-control me-2" type="text" placeholder="Search" value="Seocho-gu">
+            <input id="search-input" class="form-control me-2" type="text" placeholder="Search">
             <img id="search-icon" src="{{ asset('assets/icons/135-search.png') }}" alt="" srcset="">
         </form>
         <span>Welcome {{ $user->FullName }}</span>

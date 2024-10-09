@@ -9,31 +9,26 @@ use App\Models\Booking;
 use Illuminate\Http\Request;
 use App\Models\BookingDetail;
 use App\Models\ItemPrice;
+use Illuminate\Validation\ValidationException;
 
 class ApiController extends Controller
 {
     function searchItemByArea(Request $request)
     {
         $area_name = $request->area_name;
-        $from_date = Carbon::parse($request->date)->format("Y-m-d H:i:s.u");
-        $duration = intval($request->duration);
-        $to_date = Carbon::parse($from_date)->addDays($duration)->format("Y-m-d H:i:s.u");
-
-
+        $from_date = $request->from_date;
+        $duration = $request->duration;
+        if($duration <= 0 || $duration - intval($duration) > 0){
+            abort(417,'The duration is not a valid number!');
+        }
+        
+        if(Carbon::parse($from_date)->format('d-m-Y') !== $from_date){
+            abort(417,'The date is not valid!');
+        }
         $items = Item::whereHas('area', function ($q) use ($area_name) {
             $q->where('Name', 'like', '%' . $area_name . '%');
-        })
-            ->whereHas('prices', function ($q)  use ($from_date, $to_date) {
-                $q->whereDoesntHave('booking_details.booking', function ($q)  use ($from_date, $to_date) {
-                    $q->where('BookingDate', '>=', $from_date)
-                        ->where('BookingDate', '<', $to_date);
-                });
-            })->with(['pictures', 'area', 'current_price' => function ($q) use ($from_date) {
-                $q->where('Date', '<=', $from_date);
-            }])
+        })->Available($from_date, $duration)
             ->get();
-
-
 
         return response($items, 200);
     }
