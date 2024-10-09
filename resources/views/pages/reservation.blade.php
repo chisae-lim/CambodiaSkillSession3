@@ -73,7 +73,7 @@
                 const res = await axios.get('/api/search/items/', {
                     params: {
                         area_name: area_name,
-                        date: date, // 'DD-MM-YYYY'
+                        from_date: date, // 'DD-MM-YYYY'
                         duration: duration,
                     }
                 });

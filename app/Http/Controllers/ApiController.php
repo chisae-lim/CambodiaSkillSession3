@@ -18,12 +18,11 @@ class ApiController extends Controller
         $area_name = $request->area_name;
         $from_date = $request->from_date;
         $duration = $request->duration;
-        if($duration <= 0 || $duration - intval($duration) > 0){
-            abort(417,'The duration is not a valid number!');
+        if ($duration <= 0 || $duration - intval($duration) > 0) {
+            abort(417, 'The duration is not a valid number!');
         }
-        
-        if(Carbon::parse($from_date)->format('d-m-Y') !== $from_date){
-            abort(417,'The date is not valid!');
+        if (Carbon::parse($from_date)->format('d-m-Y') !== $from_date) {
+            abort(417, 'The date is not valid!');
         }
         $items = Item::whereHas('area', function ($q) use ($area_name) {
             $q->where('Name', 'like', '%' . $area_name . '%');
