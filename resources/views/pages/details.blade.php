@@ -43,10 +43,10 @@
                 <div class="row mt-3">
                     <div class="col">
                         <div class="d-flex">
-                            <p class="fs-6">Capactiy <span>{{ $item->Capacity }}</span></p>
-                            <p class="fs-6">Bedrooms <span>{{ $item->NumberOfBedrooms }}</span></p>
-                            <p class="fs-6">Beds <span>{{ $item->NumberOfBeds }}</span></p>
-                            <p class="fs-6">Bathrooms <span>{{ $item->NumberOfBathrooms }}</span></p>
+                            <p class="mx-1">Capactiy <span>{{ $item->Capacity }},</span></p>
+                            <p class="mx-1">Bedrooms <span>{{ $item->NumberOfBedrooms }},</span></p>
+                            <p class="mx-1">Beds <span>{{ $item->NumberOfBeds }},</span></p>
+                            <p class="mx-1">Bathrooms <span>{{ $item->NumberOfBathrooms }}</span></p>
                         </div>
                         <h1 class="fs-5">Description</h1>
                         <p>{{ $item->Description }}</p>
@@ -77,14 +77,15 @@
                         </p>
                         <p class="d-flex justify-content-start">
                             <span class="my-auto"> Reserve for</span>
-                            <input type="number" class="form-control w-25 mx-1" step="1" value="1"
-                                min="1" max="{{ $item->Capacity }}">
+                            <input id="ppl-input" type="number" class="form-control w-25 mx-1" step="1"
+                                value="1" min="1" max="{{ $item->Capacity - 1 }}">
                             <span class="my-auto"> ppl</span>
 
                         </p>
-                        <h5>Payable Amount {{ $item->current_price->Price * $duration }} USD</h5>
-                        <button class="btn btn-outline-primary w-100">Reserve now</a>
-                        </button>
+                        <h5>Payable Amount {{ $item->total }} USD</h5>
+                        <a id="reserve-btn" class="btn btn-outline-primary w-100">
+                            Reserve now
+                        </a>
                     </div>
                 </div>
             </div>
@@ -97,6 +98,14 @@
     <script>
         $(document).ready(function() {
             $('#search-input').val('{{ $item ? $item->area->Name : '' }}').prop('disabled', true);
+
+            $('#reserve-btn').click(function() {
+                const ppl = $('#ppl-input').val();
+
+                window.location.href = '/reservation/payment/item/' + '{{ $item->GUID }}' + '/date/' +
+                    '{{ $from_date }}' + '/duration/' + '{{ $duration }}' + '/ppl/' +
+                    ppl;
+            });
         });
     </script>
 @endsection

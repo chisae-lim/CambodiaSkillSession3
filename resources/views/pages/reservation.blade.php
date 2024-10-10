@@ -80,17 +80,17 @@
                 const items = res.data;
                 $('#item-container').empty();
                 items.forEach(({
-                    ID,
+                    GUID,
                     Title,
                     Capacity,
                     pictures,
                     area,
-                    current_price
+                    total
                 }) => { // object destructuring
 
                     $('#item-container').append(
                         '<div class="col-3 mb-5">' +
-                        '<a href="/items/detail/' + ID + '/date/' + date + '/duration/' +
+                        '<a href="/reservation/detail/item/' + GUID + '/date/' + date + '/duration/' +
                         duration + '">' +
 
                         '<div class="card h-100">' +
@@ -111,7 +111,7 @@
                         '</div>' +
                         '</div>' +
                         '<div class="">' +
-                        'total price $<span>' + current_price.Price + '</span>' +
+                        'total price $<span>' + total + '</span>' +
                         '</div>' +
                         '</div>' +
                         '</div>' +

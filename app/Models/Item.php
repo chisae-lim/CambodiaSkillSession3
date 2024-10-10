@@ -29,11 +29,6 @@ class Item extends Model
         return $this->hasMany(ItemPicture::class, 'ItemID');
     }
 
-    function current_price()
-    {
-        return $this->hasOne(ItemPrice::class, 'ItemID', 'ID')->orderBy('Date', 'desc');
-    }
-
     function item_amenities()
     {
         return $this->hasMany(ItemAmenity::class, 'ItemID');
@@ -44,13 +39,29 @@ class Item extends Model
         $from_date = Carbon::parse($from_date)->format("Y-m-d H:i:s.u");
         $to_date = Carbon::parse($from_date)->addDays(intval($duration))->format("Y-m-d H:i:s.u");
         $query->whereHas('prices', function ($q)  use ($from_date, $to_date) {
-            $q->where('Date', '<=', $from_date)
+            $q->where(function ($q)  use ($from_date, $to_date) {
+                $q->where(function ($q)  use ($from_date, $to_date) {
+                    $q->where('Date', '>=', $from_date)
+                        ->where('Date', '<', $to_date);
+                })->orWhere('Date', '<=', $from_date);
+            })
                 ->whereDoesntHave('booking_details.booking', function ($q)  use ($from_date, $to_date) {
                     $q->where('BookingDate', '>=', $from_date)
                         ->where('BookingDate', '<', $to_date);
                 });
-        })->with(['pictures', 'area', 'current_price' => function ($q) use ($from_date) {
-            $q->where('Date', '<=', $from_date);
-        }]);
+        })->with(['pictures', 'area', 'prices']);
+    }
+
+    function total($from_date, $duration)
+    {
+        $from_date = Carbon::parse($from_date)->format("Y-m-d H:i:s.u");
+        $total = 0;
+        for ($i = 1; $i <= $duration; $i++) {
+            $to_date = Carbon::parse($from_date)->addDays($i - 1)->format("Y-m-d H:i:s.u");
+
+            $total += ItemPrice::where('ItemID', $this->ID)
+                ->where('Date', '<=', $to_date)->orderBy('Date', 'desc')->first()->Price;
+        }
+        return  $total;
     }
 }

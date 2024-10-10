@@ -29,6 +29,11 @@ class ApiController extends Controller
         })->Available($from_date, $duration)
             ->get();
 
+
+        // loop
+        foreach ($items as $item) {
+            $item->total = $item->total($from_date, $duration);
+        }
         return response($items, 200);
     }
 }
