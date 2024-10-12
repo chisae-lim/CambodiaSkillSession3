@@ -11,9 +11,22 @@ class BookingDetail extends Model
 
     protected $table = 'bookingdetails';
     protected $primaryKey = 'ID';
+    public $timestamps = false;
+    protected $fillable = [
+        'ID',
+        'GUID',
+        'BookingID',
+        'ItemPriceID',
+        'isRefund'
 
+    ];
     function booking()
     {
         return $this->belongsTo(Booking::class, 'BookingID');
+    }
+
+    function price()
+    {
+        return $this->belongsTo(ItemPrice::class, 'ItemPriceID');
     }
 }

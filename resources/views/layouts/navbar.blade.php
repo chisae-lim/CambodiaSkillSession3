@@ -16,7 +16,7 @@
 </style>
 <nav class="navbar navbar-expand-lg bg-body-tertiary">
     <div class="container d-flex justify-content-between">
-        <a class="navbar-brand" href="#"><img src="{{ asset('assets/images/WSC2022SE_TP09_Logo_actual_en.png') }}"
+        <a class="navbar-brand" href="/"><img src="{{ asset('assets/images/WSC2022SE_TP09_Logo_actual_en.png') }}"
                 alt="Logo" height="24" class="d-inline-block align-text-top">
             </a>
         <form id="search-form" class="d-flex col-4" role="search">
